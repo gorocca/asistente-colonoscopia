@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Asistente de Preparación — Colonoscopia</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --teal-950:#0F2E2C;
+  --teal-800:#164B48;
+  --teal-700:#1B5C58;
+  --teal-600:#2E7D74;
+  --teal-400:#6FB8AC;
+  --teal-200:#BFE1DA;
+  --mint-50:#F1F7F5;
+  --mint-100:#E7F1EE;
+  --amber-500:#C98A2B;
+  --amber-100:#FBEDD8;
+  --ink-900:#20302D;
+  --ink-600:#4C5D59;
+  --ink-400:#7C8C88;
+  --white:#FFFFFF;
+  --radius:16px;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--mint-50);
+  color:var(--ink-900);
+  min-height:100vh;
+}
+
+.app{
+  max-width:720px;
+  margin:0 auto;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:var(--white);
+  box-shadow:0 0 40px rgba(15,46,44,0.06);
+}
+
+/* ---------- Header ---------- */
+header{
+  background:linear-gradient(150deg,var(--teal-950),var(--teal-700));
+  color:var(--white);
+  padding:28px 28px 22px;
+  position:relative;
+  overflow:hidden;
+}
+header::after{
+  content:"";
+  position:absolute;
+  right:-60px; top:-60px;
+  width:200px; height:200px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(111,184,172,0.25), transparent 70%);
+}
+.eyebrow{
+  font-size:11px;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:var(--teal-200);
+  font-weight:600;
+  margin-bottom:8px;
+}
+h1{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:26px;
+  line-height:1.25;
+  margin:0 0 6px;
+}
+.subtitle{
+  font-size:14px;
+  color:#D7EAE6;
+  max-width:46ch;
+  line-height:1.5;
+  margin:0;
+}
+
+/* ---------- Timeline ---------- */
+.timeline{
+  display:flex;
+  background:var(--teal-950);
+  padding:0 14px 16px;
+  gap:6px;
+}
+.timeline button{
+  flex:1;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.14);
+  color:#DCEEEA;
+  font-family:'Inter',sans-serif;
+  font-size:11.5px;
+  font-weight:600;
+  padding:9px 4px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:all .15s ease;
+  text-align:center;
+  line-height:1.3;
+}
+.timeline button:hover{
+  background:var(--teal-600);
+  border-color:var(--teal-600);
+  transform:translateY(-1px);
+}
+.timeline button b{display:block;font-size:13px;font-family:'Fraunces',serif;font-weight:600;}
+
+/* ---------- Disclaimer ---------- */
+.disclaimer{
+  margin:18px 20px 4px;
+  background:var(--amber-100);
+  border-left:4px solid var(--amber-500);
+  padding:12px 14px;
+  border-radius:10px;
+  font-size:12.5px;
+  color:#6B4A12;
+  line-height:1.55;
+}
+.disclaimer b{color:#5A3D0E;}
+
+/* ---------- Chat ---------- */
+.chat{
+  flex:1;
+  padding:16px 20px 8px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  overflow-y:auto;
+}
+.row{display:flex; gap:10px; align-items:flex-end;}
+.row.user{justify-content:flex-end;}
+.avatar{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--teal-600);
+  flex:none;
+  display:flex;align-items:center;justify-content:center;
+  color:white;font-size:14px;
+}
+.bubble{
+  max-width:78%;
+  padding:12px 15px;
+  border-radius:var(--radius);
+  font-size:14.5px;
+  line-height:1.6;
+}
+.row.bot .bubble{
+  background:var(--mint-100);
+  border-bottom-left-radius:4px;
+  color:var(--ink-900);
+}
+.row.user .bubble{
+  background:var(--teal-700);
+  color:white;
+  border-bottom-right-radius:4px;
+}
+.bubble ul{margin:6px 0 0;padding-left:18px;}
+.bubble li{margin-bottom:5px;}
+.bubble .tag{
+  display:inline-block;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  color:var(--teal-600);
+  background:var(--teal-200);
+  padding:2px 8px;
+  border-radius:20px;
+  margin-bottom:8px;
+}
+.bubble .warn{
+  display:block;
+  margin-top:8px;
+  padding:8px 10px;
+  background:var(--amber-100);
+  border-left:3px solid var(--amber-500);
+  border-radius:8px;
+  font-size:13px;
+  color:#6B4A12;
+}
+.bubble .source{
+  display:flex;
+  gap:6px;
+  align-items:flex-start;
+  margin-top:10px;
+  padding-top:8px;
+  border-top:1px dashed var(--teal-200);
+  font-size:11.5px;
+  font-style:italic;
+  color:var(--ink-400);
+  line-height:1.5;
+}
+.bubble .source .icon{flex:none;font-style:normal;}
+.refs-list{margin:0;padding-left:0;list-style:none;}
+.refs-list li{
+  margin-bottom:12px;
+  padding-left:16px;
+  border-left:2px solid var(--teal-400);
+  font-size:12.5px;
+  color:var(--ink-600);
+  line-height:1.5;
+}
+.refs-list b{display:block;color:var(--ink-900);font-size:13.5px;margin-bottom:2px;}
+.typing{display:flex;gap:4px;padding:4px 0;}
+.typing span{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--teal-400);
+  animation:blink 1.2s infinite ease-in-out;
+}
+.typing span:nth-child(2){animation-delay:.2s;}
+.typing span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.25;}40%{opacity:1;}}
+
+/* ---------- Chips ---------- */
+.chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:2px 20px 4px 48px;
+}
+.chip{
+  background:var(--white);
+  border:1.5px solid var(--teal-400);
+  color:var(--teal-700);
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  padding:8px 14px;
+  border-radius:999px;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.chip:hover{
+  background:var(--teal-600);
+  color:white;
+  border-color:var(--teal-600);
+  transform:translateY(-1px);
+}
+
+/* ---------- Input bar ---------- */
+.inputbar{
+  display:flex;
+  gap:8px;
+  padding:14px 20px 20px;
+  border-top:1px solid var(--mint-100);
+  background:var(--white);
+}
+.inputbar input{
+  flex:1;
+  border:1.5px solid var(--mint-100);
+  background:var(--mint-50);
+  border-radius:999px;
+  padding:12px 16px;
+  font-size:14px;
+  font-family:'Inter',sans-serif;
+  color:var(--ink-900);
+  outline:none;
+}
+.inputbar input:focus{border-color:var(--teal-400);}
+.inputbar button{
+  background:var(--teal-700);
+  color:white;
+  border:none;
+  width:44px;height:44px;
+  border-radius:50%;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex:none;
+  transition:background .15s ease;
+}
+.inputbar button:hover{background:var(--teal-600);}
+.inputbar button:focus-visible, .chip:focus-visible, .timeline button:focus-visible{
+  outline:2px solid var(--amber-500);
+  outline-offset:2px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .chip, .timeline button, .typing span{animation:none;transition:none;}
+}
+
+@media (max-width:480px){
+  h1{font-size:22px;}
+  .bubble{max-width:86%;}
+  .chips{padding-left:20px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="eyebrow">Unidad de Endoscopia Digestiva</div>
+    <h1>Preparación para tu colonoscopia</h1>
+    <p class="subtitle">Pregúntame sobre la dieta, la retirada de medicación, las horas de ayuno o la toma del laxante. Estoy aquí para acompañarte los días previos a la prueba.</p>
+  </header>
+
+  <div class="timeline" id="timeline"></div>
+
+  <div class="disclaimer">
+    <b>Antes de empezar:</b> cada respuesta cita la guía clínica en la que se basa (ESGE, BSG, ASA...) — puedes verla al final del mensaje o en "📚 Fuentes científicas". Aun así, las pautas exactas —producto, dosis y horarios— las marca tu hospital y tu médico según tu caso. Ante cualquier duda, especialmente si tomas anticoagulantes o antidiabéticos, consulta siempre con tu equipo sanitario.
+  </div>
+
+  <div class="chat" id="chat"></div>
+  <div class="chips" id="chips"></div>
+
+  <div class="inputbar">
+    <input id="userInput" type="text" placeholder="Escribe tu duda, por ejemplo: ¿puedo tomar café?" autocomplete="off">
+    <button id="sendBtn" aria-label="Enviar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 11L21 3L13 21L11 13L3 11Z" stroke="white" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+/* ---------------- Knowledge base ---------------- */
+const TOPICS = {
+
+  menu: {
+    label: "Ver todos los temas",
+    answer: "¿Sobre qué te gustaría saber más?",
+    chips: ["alimentacion","medicacion_menu","laxante","ayuno","dia_prueba","fuentes","otras"]
+  },
+
+  alimentacion: {
+    label: "🍽️ Alimentación",
+    keywords: ["comer","comida","dieta","alimento","fruta","verdura","fibra","residuo","pan","arroz","legumbre"],
+    answer: `<span class="tag">Alimentación</span>
+    La dieta se ajusta en fases, aunque el detalle exacto lo marca tu hospital:
+    <ul>
+      <li><b>Desde 5 días antes:</b> evita frutos secos, semillas, legumbres con piel, palomitas y cereales integrales.</li>
+      <li><b>Desde 3 días antes (dieta baja en residuos):</b> permitido carne y pescado a la plancha, huevo, pasta y arroz blancos, pan tostado no integral, lácteos desnatados y caldos colados. Evita verduras, ensaladas, legumbres, fruta entera, patata con piel y productos integrales.</li>
+      <li><b>El día antes:</b> solo líquidos claros — agua, caldo colado, infusiones, zumos colados sin pulpa, gelatina (evita los colores rojo o morado) y bebidas isotónicas. Nada de lácteos ni sólidos.</li>
+    </ul>
+    <span class="warn">Sigue siempre la hoja de dieta concreta de tu centro: puede variar según el tipo de preparación que te hayan recetado.</span>
+    <span class="warn">Dato de evidencia reciente: la guía europea ESGE (2019) considera la dieta baja en fibra el día antes al menos igual de eficaz que los líquidos claros estrictos, y mejor tolerada. Muchos hospitales españoles siguen pidiendo líquidos claros ese último día por protocolo local — sigue siempre la indicación de tu centro.</span>`,
+    source: `📚 Hassan C, et al. <i>Bowel preparation for colonoscopy: ESGE Guideline – Update 2019.</i> Endoscopy. 2019;51(8):775–794.`,
+    chips: ["ayuno","laxante","menu"]
+  },
+
+  medicacion_menu: {
+    label: "💊 Medicación",
+    keywords: ["medicacion","medicamento","pastilla","farmaco","pildora"],
+    answer: `<span class="tag">Medicación</span> La retirada de medicación depende del fármaco. ¿Cuál te interesa?`,
+    chips: ["avk","acod","antiagregantes","hierro","diabetes","glp1","med_habitual"]
+  },
+
+  avk: {
+    label: "Sintrom / acenocumarol",
+    keywords: ["sintrom","acenocumarol","anticoagulante oral clasico"],
+    answer: `<span class="tag">Anticoagulantes · Sintrom</span>
+    El Sintrom® (acenocumarol) suele suspenderse entre <b>3 y 5 días antes</b> de la colonoscopia. En algunos casos se sustituye temporalmente por heparina de bajo peso molecular ("terapia puente") hasta el día de la prueba.
+    <span class="warn">Esta decisión debe indicarla tu médico o el servicio que controla tu anticoagulación (hematología/cardiología). No lo suspendas por tu cuenta.</span>`,
+    source: `📚 Veitch AM, et al. <i>Endoscopy in patients on antiplatelet or anticoagulant therapy, including direct oral anticoagulants: BSG and ESGE guidelines.</i> Gut. 2016;65(3):374–389.`,
+    chips: ["medicacion_menu","menu"]
+  },
+
+  acod: {
+    label: "Xarelto / Eliquis / Pradaxa",
+    keywords: ["xarelto","eliquis","pradaxa","lixiana","anticoagulante directo","aco directo"],
+    answer: `<span class="tag">Anticoagulantes de acción directa</span>
+    Xarelto®, Eliquis®, Pradaxa® o Lixiana® suelen suspenderse aproximadamente <b>48 horas antes</b> de la prueba. Si tienes la función renal reducida, el margen puede ser mayor.
+    <span class="warn">Confirma con tu médico el número exacto de días, ya que depende del fármaco y de tu riñón.</span>`,
+    source: `📚 Veitch AM, et al. <i>Endoscopy in patients on antiplatelet or anticoagulant therapy, including direct oral anticoagulants: BSG and ESGE guidelines.</i> Gut. 2016;65(3):374–389.`,
+    chips: ["medicacion_menu","menu"]
+  },
+
+  antiagregantes: {
+    label: "Aspirina / clopidogrel",
+    keywords: ["aspirina","aas","clopidogrel","plavix","ticagrelor","prasugrel","antiagregante","stent"],
+    answer: `<span class="tag">Antiagregantes</span>
+    La aspirina (AAS) en monoterapia normalmente <b>se puede mantener</b> sin problema. Si tomas clopidogrel, prasugrel, ticagrelor u otro antiagregante distinto de la aspirina, lo habitual es suspenderlo entre <b>5 y 7 días antes</b>.
+    <span class="warn">Si llevas un stent coronario, esta suspensión siempre debe supervisarla tu cardiólogo.</span>`,
+    source: `📚 Veitch AM, et al. <i>Endoscopy in patients on antiplatelet or anticoagulant therapy, including direct oral anticoagulants: BSG and ESGE guidelines.</i> Gut. 2016;65(3):374–389.`,
+    chips: ["medicacion_menu","menu"]
+  },
+
+  hierro: {
+    label: "Suplementos de hierro",
+    keywords: ["hierro","ferogradumet","tardyferon","fero"],
+    answer: `<span class="tag">Hierro oral</span>
+    Los suplementos de hierro (Ferogradumet®, Tardyferon®, etc.) se suspenden aproximadamente <b>una semana antes</b>, porque oscurecen y espesan las heces y dificultan la visión de la mucosa durante la prueba.`,
+    source: `📚 Recomendación recogida de forma consistente en protocolos hospitalarios de unidades de endoscopia digestiva (consenso clínico, no existe un ensayo aleatorizado específico de referencia).`,
+    chips: ["medicacion_menu","menu"]
+  },
+
+  diabetes: {
+    label: "Diabetes / insulina",
+    keywords: ["diabetes","insulina","metformina","glucosa","diabetico","hipoglucemia"],
+    answer: `<span class="tag">Diabetes</span>
+    Durante los días de dieta baja en residuos y líquidos claros comerás menos hidratos de carbono, así que puede ser necesario <b>ajustar la dosis de insulina o de antidiabéticos orales</b> para evitar hipoglucemias.
+    <span class="warn">Coméntalo con antelación con tu médico o tu enfermera: no modifiques ni suspendas tu tratamiento por tu cuenta.</span>`,
+    source: `📚 Guía de manejo perioperatorio de diabetes (consenso de sociedades de endocrinología); recomendación general aplicada a procedimientos con ayuno prolongado.`,
+    chips: ["medicacion_menu","menu"]
+  },
+
+  glp1: {
+    label: "Ozempic / Saxenda / GLP-1",
+    keywords: ["ozempic","saxenda","wegovy","trulicity","mounjaro","glp-1","glp1","semaglutida","liraglutida"],
+    answer: `<span class="tag">Novedad reciente · Agonistas GLP-1</span>
+    Si usas Ozempic®, Saxenda®, Wegovy®, Trulicity® o Mounjaro® (agonistas del GLP-1), ten en cuenta que estos fármacos <b>enlentecen el vaciado del estómago</b>. Esto puede hacer que quede contenido gástrico incluso cumpliendo el ayuno habitual, con más riesgo durante la sedación.
+    <ul>
+      <li>Formulación semanal: se suele pedir suspenderla <b>una semana antes</b>.</li>
+      <li>Formulación diaria: se suele pedir suspenderla <b>el mismo día</b> de la prueba.</li>
+    </ul>
+    <span class="warn">Es una recomendación relativamente nueva (2023–2025) y algunos centros aún la están incorporando: avisa siempre a la unidad de endoscopia de que tomas este tipo de medicación al programar la cita.</span>`,
+    source: `📚 American Society of Anesthesiologists. <i>Consensus-Based Guidance on Preoperative Management of Patients on GLP-1 Receptor Agonists.</i> 2023. · Rev Gastroenterol Méx. 2025 (manejo preoperatorio de análogos GLP-1).`,
+    chips: ["medicacion_menu","ayuno","menu"]
+  },
+
+  med_habitual: {
+    label: "Tensión / tiroides / otras",
+    keywords: ["tension","tiroides","corazon","habitual","pastilla diaria"],
+    answer: `<span class="tag">Medicación habitual</span>
+    La medicación para la tensión arterial, el corazón, la tiroides y similares generalmente <b>se mantiene igual</b>, tomándola con un pequeño sorbo de agua aunque estés en ayunas.
+    <span class="warn">Ante cualquier fármaco que no tengas claro, pregunta a tu enfermera o médico antes de suspenderlo por iniciativa propia.</span>`,
+    chips: ["medicacion_menu","menu"]
+  },
+
+  laxante: {
+    label: "🧪 Toma del laxante",
+    keywords: ["laxante","pleinvue","moviprep","bohm","purga","solucion evacuante","sobres","citrafleet","casenlax","movicol"],
+    answer: `<span class="tag">Preparación con laxante</span>
+    La limpieza del colon se hace con una solución evacuante (Pleinvue®, Moviprep®, Solución Bohm® u otra, según lo recetado en tu centro). Lo más habitual es la <b>pauta partida en dos tomas</b>:
+    <ul>
+      <li><b>1ª toma:</b> la noche anterior a la prueba.</li>
+      <li><b>2ª toma:</b> la madrugada o mañana del mismo día, terminando 2–3 horas antes de tu cita.</li>
+    </ul>
+    Se toma disuelta en agua, a sorbos y con calma; conviene beber líquidos claros entre dosis para no deshidratarte. Sabrás que la preparación ha funcionado cuando las deposiciones sean líquidas y de color claro, casi transparente.
+    <span class="warn">Sigue la dosis y el horario exactos de la hoja que te entregó tu hospital: cambian según el producto y la hora de tu cita.</span>`,
+    source: `📚 Hassan C, et al. <i>Bowel preparation for colonoscopy: ESGE Guideline – Update 2019.</i> Endoscopy. 2019;51(8):775–794. (Pauta partida en dos dosis; última dosis iniciada dentro de las 5h previas y finalizada al menos 2h antes.)`,
+    chips: ["ayuno","alimentacion","menu"]
+  },
+
+  ayuno: {
+    label: "⏱️ Horas de ayuno",
+    keywords: ["ayuno","horas","ayunas","beber antes","agua antes","sed"],
+    answer: `<span class="tag">Ayuno</span>
+    Para la colonoscopia con sedación, el ayuno tiene dos partes:
+    <ul>
+      <li><b>Sólidos:</b> al menos 6–8 horas antes de la prueba.</li>
+      <li><b>Líquidos claros</b> (agua, té, infusiones claras): permitidos hasta 2–3 horas antes; después, ayuno total, ni siquiera agua.</li>
+    </ul>
+    Muchos centros piden terminar la segunda dosis del laxante 2–3 horas antes de la cita, para llegar con el estómago vacío pero bien hidratado.
+    <span class="warn">Si tomas agonistas del GLP-1 (Ozempic, Saxenda...) el vaciado gástrico es más lento: consulta el apartado de medicación, puede afectar a tu pauta de ayuno.</span>`,
+    source: `📚 American Society of Anesthesiologists. <i>Practice Guidelines for Preoperative Fasting.</i> (2h líquidos claros / 6–8h sólidos). · Hassan C, et al. ESGE Guideline – Update 2019, Endoscopy. 2019;51(8):775–794.`,
+    chips: ["laxante","glp1","menu"]
+  },
+
+  dia_prueba: {
+    label: "📋 El día de la prueba",
+    keywords: ["acompañante","conducir","ropa","llevar","dni","sedacion","el dia","que llevar"],
+    answer: `<span class="tag">El día de la prueba</span>
+    <ul>
+      <li>Ven <b>acompañado/a</b>: por la sedación no podrás conducir ni hacer actividades de riesgo en las siguientes 24 horas.</li>
+      <li>Trae tu DNI, tarjeta sanitaria y, si tomas anticoagulantes o llevas una prótesis, el informe correspondiente.</li>
+      <li>Viste ropa cómoda y retira anillos, pulseras, reloj y piercings.</li>
+      <li>Si tienes fiebre, diarrea aguda o cualquier síntoma nuevo, avisa a la unidad antes de acudir.</li>
+    </ul>`,
+    source: `📚 Recomendaciones estándar de seguridad para procedimientos con sedación (protocolos hospitalarios de endoscopia digestiva).`,
+    chips: ["ayuno","menu"]
+  },
+
+  otras: {
+    label: "❓ Otra pregunta",
+    answer: `Puedes escribir tu duda directamente en el cuadro de abajo, o elegir uno de los temas del menú. Si tu pregunta es muy específica de tu caso (otros medicamentos, alergias, enfermedades previas...), lo más seguro es que la consultes con tu enfermera o médico de la unidad de endoscopia.`,
+    chips: ["menu"]
+  },
+
+  fuentes: {
+    label: "📚 Fuentes científicas",
+    keywords: ["fuente","evidencia","guia","referencia","bibliografia","cientifica"],
+    answer: `<span class="tag">Evidencia científica</span> Todo el contenido de este asistente está basado en las siguientes guías y documentos de consenso:
+    <ul class="refs-list">
+      <li><b>Bowel preparation for colonoscopy — ESGE Guideline, Update 2019</b>
+      Hassan C, et al. Endoscopy. 2019;51(8):775–794. (Dieta, pauta partida del laxante, tiempos).</li>
+      <li><b>Endoscopy in patients on antiplatelet or anticoagulant therapy — BSG/ESGE Guidelines</b>
+      Veitch AM, et al. Gut. 2016;65(3):374–389. (Anticoagulantes y antiagregantes.)</li>
+      <li><b>Practice Guidelines for Preoperative Fasting</b>
+      American Society of Anesthesiologists (ASA). (Horas de ayuno de sólidos y líquidos.)</li>
+      <li><b>Consensus-Based Guidance on Preoperative Management of Patients on GLP-1 Receptor Agonists</b>
+      American Society of Anesthesiologists (ASA), 2023; con actualización en Rev Gastroenterol Méx, 2025.</li>
+    </ul>
+    <span class="warn">Las recomendaciones sobre hierro oral, ajuste de antidiabéticos y medicación habitual reflejan consenso clínico extendido en unidades de endoscopia, más que un único ensayo de referencia. En todos los casos, el protocolo de tu hospital y el criterio de tu médico tienen prioridad sobre esta guía general.</span>`,
+    chips: ["menu"]
+  },
+
+  fallback: {
+    answer: `No tengo una respuesta concreta para eso. Te recomiendo consultarlo directamente con tu enfermera o médico de la unidad de endoscopia, que conoce tu caso y el protocolo exacto de tu centro. Mientras tanto, esto es lo que sí puedo contarte:`,
+    chips: ["alimentacion","medicacion_menu","laxante","ayuno","dia_prueba","fuentes"]
+  }
+};
+
+const DAYS = {
+  d5:{ label:"5 días\nantes", text:`<span class="tag">5 días antes</span> Empieza evitando alimentos ricos en fibra difícil de digerir: frutos secos, semillas, legumbres con piel, palomitas y cereales integrales. El resto de tu dieta y tu medicación habitual siguen igual estos días.`, chips:["alimentacion","medicacion_menu"] },
+  d3:{ label:"3 días\nantes", text:`<span class="tag">3 días antes</span> Pasas a dieta baja en residuos: carnes y pescados a la plancha, huevo, pasta y arroz blancos, pan tostado no integral, lácteos desnatados y caldos colados. Evita verduras, legumbres, fruta entera e integrales.<span class="warn">Si tomas anticoagulantes, antiagregantes o hierro, este suele ser el momento en que tu médico marca cuándo suspenderlos — consúltalo si aún no lo has hecho.</span>`, chips:["medicacion_menu","alimentacion"] },
+  d1:{ label:"El día\nantes", text:`<span class="tag">El día antes</span> Dieta de líquidos claros todo el día: agua, caldo colado, infusiones, zumos colados y gelatina (evita los colores rojo o morado). Por la tarde o noche, según te hayan indicado, tomarás la primera dosis de la solución laxante.`, chips:["laxante","alimentacion"] },
+  d0:{ label:"Día de\nla prueba", text:`<span class="tag">Día de la prueba</span> Termina la segunda dosis del laxante con el margen indicado, respeta el ayuno de líquidos (2–3h antes) y sólidos (6–8h antes), y ven acompañado/a: no podrás conducir tras la sedación.`, chips:["ayuno","dia_prueba"] }
+};
+
+/* ---------------- Chat engine ---------------- */
+const chatEl = document.getElementById('chat');
+const chipsEl = document.getElementById('chips');
+const timelineEl = document.getElementById('timeline');
+
+function normalize(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+
+function scrollDown(){
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+function addMessage(html, who){
+  const row = document.createElement('div');
+  row.className = 'row ' + who;
+  if(who === 'bot'){
+    row.innerHTML = `<div class="avatar">🩺</div><div class="bubble">${html}</div>`;
+  } else {
+    row.innerHTML = `<div class="bubble">${html}</div>`;
+  }
+  chatEl.appendChild(row);
+  scrollDown();
+}
+
+function showTyping(callback){
+  const row = document.createElement('div');
+  row.className = 'row bot';
+  row.innerHTML = `<div class="avatar">🩺</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chatEl.appendChild(row);
+  scrollDown();
+  setTimeout(()=>{
+    row.remove();
+    callback();
+  }, 500 + Math.random()*350);
+}
+
+function renderChips(ids){
+  chipsEl.innerHTML = '';
+  ids.forEach(id=>{
+    const t = TOPICS[id];
+    if(!t) return;
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = t.label || id;
+    b.onclick = () => selectTopic(id);
+    chipsEl.appendChild(b);
+  });
+}
+
+function withSource(t){
+  if(!t.source) return t.answer;
+  return t.answer + `<div class="source"><span class="icon">🔎</span><span>${t.source}</span></div>`;
+}
+
+function selectTopic(id){
+  const t = TOPICS[id] || TOPICS.fallback;
+  if(t.label) addMessage(t.label, 'user');
+  chipsEl.innerHTML = '';
+  showTyping(()=>{
+    addMessage(withSource(t), 'bot');
+    renderChips(t.chips || ['menu']);
+  });
+}
+
+function selectDay(key){
+  const d = DAYS[key];
+  addMessage(d.label.replace('\n',' '), 'user');
+  chipsEl.innerHTML = '';
+  showTyping(()=>{
+    addMessage(d.text, 'bot');
+    renderChips([...d.chips, 'menu']);
+  });
+}
+
+function buildTimeline(){
+  Object.keys(DAYS).forEach(key=>{
+    const d = DAYS[key];
+    const btn = document.createElement('button');
+    const parts = d.label.split('\n');
+    btn.innerHTML = `<b>${parts[0]}</b>${parts[1]||''}`;
+    btn.onclick = ()=> selectDay(key);
+    timelineEl.appendChild(btn);
+  });
+}
+
+function findBestMatch(text){
+  const norm = normalize(text);
+  let best = null, bestScore = 0;
+  Object.keys(TOPICS).forEach(id=>{
+    const t = TOPICS[id];
+    if(!t.keywords) return;
+    let score = 0;
+    t.keywords.forEach(k=>{
+      if(norm.includes(normalize(k))) score += k.length;
+    });
+    if(score > bestScore){ bestScore = score; best = id; }
+  });
+  return best;
+}
+
+function handleUserText(){
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if(!text) return;
+  addMessage(text, 'user');
+  input.value = '';
+  chipsEl.innerHTML = '';
+  const match = findBestMatch(text);
+  showTyping(()=>{
+    if(match){
+      addMessage(withSource(TOPICS[match]), 'bot');
+      renderChips(TOPICS[match].chips || ['menu']);
+    } else {
+      addMessage(TOPICS.fallback.answer, 'bot');
+      renderChips(TOPICS.fallback.chips);
+    }
+  });
+}
+
+document.getElementById('sendBtn').onclick = handleUserText;
+document.getElementById('userInput').addEventListener('keydown', e=>{
+  if(e.key === 'Enter') handleUserText();
+});
+
+/* ---------------- Init ---------------- */
+buildTimeline();
+addMessage(`Hola 👋 Soy tu asistente para preparar la colonoscopia. Puedo ayudarte con la <b>alimentación</b>, la <b>medicación</b>, las <b>horas de ayuno</b> y la <b>toma del laxante</b>.<br><br>Puedes usar la línea temporal de arriba, tocar un tema, o escribirme tu duda directamente.`, 'bot');
+renderChips(['alimentacion','medicacion_menu','laxante','ayuno','dia_prueba','fuentes']);
+</script>
+</body>
+</html>
